@@ -1,0 +1,14 @@
+{
+  "name": "line-connector",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "invariant": "^2.2.2",
+    "messaging-api-line": "^0.5.5"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}

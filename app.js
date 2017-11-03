@@ -21,8 +21,9 @@ client.pushText(meta.userid, 'PUSH TEXT')
     console.log(err);
 });
 
-app.get('/webhook', (req, res) => {
+app.post('/webhook', (req, res) => {
   console.log(req.body); 
+  return res.send({ success: true, msg: 'please wait response' });
 });
 
 app.listen(port, () => {

@@ -18,12 +18,6 @@ app.use(bodyParser.json('application/json'));
 
 const port = process.env.PORT || 8080;
 
-client.pushText(meta.userid, 'PUSH TEXT').then(() => {
-    console.log('PUSH TEXT');
-}).catch((err) => {
-    console.log(err);
-});
-
 app.post('/webhook', (req, res) => {
     // Parse events to users (Promise Object)
     users = Parser.parse(req.body.events);

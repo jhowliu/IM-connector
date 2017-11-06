@@ -4,11 +4,15 @@
   "main": "app.js",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "express": "^4.16.2",
     "invariant": "^2.2.2",
-    "messaging-api-line": "^0.5.5"
+    "messaging-api-line": "^0.5.5",
+    "redis": "^2.8.0",
+    "requestretry": "^1.12.2",
+    "require-dir": "^0.3.2"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js ./manifest"
   }
 }

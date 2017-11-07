@@ -26,9 +26,10 @@ app.post('/webhook', (req, res) => {
         return dialogControl.dialog(user);
     });
 
+    // Get result for all Promise objects
     Promise.all(promises).then(replies => {
         replies.map(reply => {
-            client.replyText(reply.token, reply.text);
+            client.replyText(reply.token, reply.data.text);
         });
     });
 

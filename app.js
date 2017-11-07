@@ -1,26 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const line = require('messaging-api-line');
+const facebook = require('messaging-api-messenger');
 
-const meta = require('./config/line-meta');
-const Parser = require('./lib/parse');
-const dialogControl = require('./lib/dialogue');
 const utils = require('./lib/utils'); 
+const tokens = require('./config/tokens');
+const dialogControl = require('./lib/dialogue');
+const Parser = require('./lib/parser');
 
-const client = line.LineClient.connect(meta.accessToken, meta.secret);
+const lineClient = line.LineClient.connect(tokens.line.accessToken, tokens.line.secret);
+const facebookClient = facebook.MessengerClient.connect(tokens.facebook.accessToken);
 
 const app = express();
-
-const redis = require('./lib/redis');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json('application/json'));
 
 const port = process.env.PORT || 8080;
 
-app.post('/webhook', (req, res) => {
+app.post('/line', (req, res) => {
     // Parse events to users (Promise Object)
-    users = Parser.parse(req.body.events);
+    users = Parser.lineParse(req.body.events);
 
     const promises = users.map(user => {
         return dialogControl.dialog(user);
@@ -29,11 +29,40 @@ app.post('/webhook', (req, res) => {
     // Get result for all Promise objects
     Promise.all(promises).then(replies => {
         replies.map(reply => {
-            client.replyText(reply.token, reply.data.text);
+            lineClient.replyText(reply.token, reply.data.text);
         });
     });
 
-    return res.send({ success: true, msg: 'please wait response' });
+    return res.sendStatus(200);
+});
+
+app.post('/facebook', (req, res) => {
+    console.log(req.body);
+    console.log(req.body.entry);
+    console.log(req.body.entry[0].messaging);
+    users = Parser.facebookParse(req.body.entry[0].messaging);
+
+    const promises = users.map(user => {
+        return dialogControl.dialog(user);
+    });
+
+    // Get result for all Promise objects
+    Promise.all(promises).then(replies => {
+        replies.map(reply => {
+            facebookClient.sendText(reply.token, reply.data.text);
+        });
+    });
+
+    return res.sendStatus(200);
+});
+
+// webhook verify
+app.get('/facebook', (req, res) => {
+    if (req.query['hub.verify_token'] === fbMeta.accessToken) {
+        res.send(req.query['hub.challenge']);
+    } else {
+        res.send('Error, wrong validation token');    
+    }
 });
 
 app.listen(port, () => {

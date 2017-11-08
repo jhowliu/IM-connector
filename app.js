@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const line = require('messaging-api-line');
 const facebook = require('messaging-api-messenger');
 
-const utils = require('./lib/utils'); 
 const tokens = require('./config/tokens');
+
 const Dialog = require('./lib/dialogue');
 const Parser = require('./lib/parser');
 

@@ -5,7 +5,7 @@ const facebook = require('messaging-api-messenger');
 
 const utils = require('./lib/utils'); 
 const tokens = require('./config/tokens');
-const dialogControl = require('./lib/dialogue');
+const Dialog = require('./lib/dialogue');
 const Parser = require('./lib/parser');
 
 const lineClient = line.LineClient.connect(tokens.line.accessToken, tokens.line.secret);
@@ -23,7 +23,7 @@ app.post('/line', (req, res) => {
     users = Parser.lineParse(req.body.events);
 
     const promises = users.map(user => {
-        return dialogControl.dialog(user);
+        return Dialog.flow(user);
     });
 
     // Get result for all Promise objects
@@ -40,7 +40,7 @@ app.post('/facebook', (req, res) => {
     users = Parser.facebookParse(req.body.entry[0].messaging);
 
     const promises = users.map(user => {
-        return dialogControl.dialog(user);
+        return Dialog.flow(user);
     });
 
     // Get result for all Promise objects

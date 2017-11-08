@@ -37,9 +37,6 @@ app.post('/line', (req, res) => {
 });
 
 app.post('/facebook', (req, res) => {
-    console.log(req.body);
-    console.log(req.body.entry);
-    console.log(req.body.entry[0].messaging);
     users = Parser.facebookParse(req.body.entry[0].messaging);
 
     const promises = users.map(user => {

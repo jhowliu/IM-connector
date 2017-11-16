@@ -54,6 +54,7 @@ app.post('/facebook', (req, res) => {
             if (reply.type == 'text') { 
                 facebookClient.sendText(reply.token, reply.data.text);
             } else if (reply.type == 'template') {
+                console.log(reply);
                 facebookClient.sendGenericTemplate(reply.token, reply.data.template);
             }
         });

@@ -6,7 +6,7 @@ const facebook = require('messaging-api-messenger');
 const tokens = require('./config/tokens');
 
 const Dialog = require('./lib/dialogue');
-const Parser = require('./lib/parser');
+const Parser = require('./lib/message/parser');
 
 const lineClient = line.LineClient.connect(tokens.line.accessToken, tokens.line.secret);
 const facebookClient = facebook.MessengerClient.connect(tokens.facebook.accessToken);
@@ -29,7 +29,11 @@ app.post('/line', (req, res) => {
     // Get result for all Promise objects
     Promise.all(promises).then(replies => {
         replies.map(reply => {
-            lineClient.replyText(reply.token, reply.data.text);
+            if (reply.type == 'text') { 
+                lineClient.replyText(reply.token, reply.data.text);
+            } else if (reply.type == 'template') {
+                lineClient.replyCarouselTemplate(reply.token, 'Train Schedule', reply.data.template);
+            }
         });
     });
 
@@ -46,7 +50,12 @@ app.post('/facebook', (req, res) => {
     // Get result for all Promise objects
     Promise.all(promises).then(replies => {
         replies.map(reply => {
-            facebookClient.sendText(reply.token, reply.data.text);
+            console.log(JSON.stringify(reply, null, '  '));
+            if (reply.type == 'text') { 
+                facebookClient.sendText(reply.token, reply.data.text);
+            } else if (reply.type == 'template') {
+                facebookClient.sendGenericTemplate(reply.token, reply.data.template);
+            }
         });
     });
 

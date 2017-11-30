@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const line = require('messaging-api-line');
 const facebook = require('messaging-api-messenger');
 
+const cors = require('cors')
+
 const tokens = require('./config/tokens');
 
 const Dialog = require('./lib/dialogue');
@@ -15,6 +17,8 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json('application/json'));
+
+app.use(cors());
 
 const port = process.env.PORT || 8080;
 
@@ -59,6 +63,17 @@ app.post('/facebook', (req, res) => {
     });
 
     return res.sendStatus(200);
+});
+
+app.post('/webapp', (req, res) => {
+    users = Parser.webParse([req.body]);
+
+    users.map(user => {
+        user.then(obj => {
+            console.log(JSON.stringify(obj, null, 4));
+        });
+    });
+    res.sendStatus(200);
 });
 
 // webhook verify

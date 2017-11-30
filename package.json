@@ -4,6 +4,7 @@
   "main": "app.js",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.4",
     "express": "^4.16.2",
     "invariant": "^2.2.2",
     "messaging-api-line": "^0.5.5",
